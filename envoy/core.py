@@ -14,6 +14,9 @@ import signal
 import subprocess
 import threading
 
+from clint.textui import puts, indent
+from clint.textui.colored import red, blue
+
 
 __version__ = '0.0.2'
 __license__ = 'MIT'
@@ -190,7 +193,7 @@ def expand_args(command):
     return command
 
 
-def run(command, data=None, timeout=None, kill_timeout=None, env=None, cwd=None):
+def run(command, data=None, timeout=None, kill_timeout=None, env=None, cwd=None, show=False):
     """Executes a given commmand and returns Response.
 
     Blocks until process is complete, or timeout is reached.
@@ -200,6 +203,9 @@ def run(command, data=None, timeout=None, kill_timeout=None, env=None, cwd=None)
 
     history = []
     for c in command:
+        
+        if show:
+            puts(blue(c))
 
         if len(history):
             # due to broken pipe problems pass only first 10 KiB
@@ -214,6 +220,13 @@ def run(command, data=None, timeout=None, kill_timeout=None, env=None, cwd=None)
         r.std_out = out
         r.std_err = err
         r.status_code = cmd.returncode
+        
+        if show:
+            with indent(4):
+                puts(r.std_out)
+                if r.status_code != 0:
+                    puts(red('Status Code: {}'.format(r.status_code)))
+                puts(red(r.std_err))
 
         history.append(r)
 
