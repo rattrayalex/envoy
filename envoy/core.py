@@ -199,17 +199,21 @@ def run(command, data=None, timeout=None, kill_timeout=None, env=None, cwd=None,
     Blocks until process is complete, or timeout is reached.
     """
 
+    if show:
+        puts(cyan(command))
+
     command = expand_args(command)
 
     history = []
     for c in command:
-        
-        if show:
-            puts(blue(c))
 
         if len(history):
             # due to broken pipe problems pass only first 10 KiB
             data = history[-1].std_out[0:10*1024]
+
+        if show and len(command) > 1:
+            with indent(2):
+                puts(blue(str(c)))
 
         cmd = Command(c)
         out, err = cmd.run(data, timeout, kill_timeout, env, cwd)
@@ -220,7 +224,7 @@ def run(command, data=None, timeout=None, kill_timeout=None, env=None, cwd=None,
         r.std_out = out
         r.std_err = err
         r.status_code = cmd.returncode
-        
+
         if show:
             with indent(4):
                 puts(r.std_out)
