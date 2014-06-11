@@ -16,7 +16,10 @@ if sys.argv[-1] == "publish":
     os.system("python setup.py sdist upload")
     sys.exit()
 
-required = []
+required = [
+    # TODO: add required version(s)
+    "clint"
+]
 
 setup(
     name='envoy',
