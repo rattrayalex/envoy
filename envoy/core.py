@@ -15,7 +15,7 @@ import subprocess
 import threading
 
 from clint.textui import puts, indent
-from clint.textui.colored import red, blue
+from clint.textui.colored import red, blue, cyan
 
 
 __version__ = '0.0.2'
